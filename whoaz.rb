@@ -1,5 +1,8 @@
 require 'sinatra'
 require 'whoaz'
+require 'redis'
+
+REDIS = Redis.new(url: ENV['REDIS_URL'])
 
 get '/' do
   redirect 'https://narkoz.github.io/whoaz'
@@ -7,6 +10,9 @@ end
 
 get '/v1/:domain' do
   content_type :json
+
+  key = "whoaz_domain:#{params[:domain]}"
+  REDIS.exists(key) ? REDIS.incr(key) : REDIS.set(key, 1)
 
   begin
     domain = Whoaz.whois params[:domain]
