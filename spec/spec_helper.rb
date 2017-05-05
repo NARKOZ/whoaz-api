@@ -1,5 +1,4 @@
 require './whoaz'
-require 'sinatra'
 require 'rspec'
 require 'rack/test'
 require 'json_spec'
