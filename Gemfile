@@ -1,4 +1,4 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'whoaz', '~> 2.0'
 gem 'sinatra', '2.0.0.rc2'
