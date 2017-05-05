@@ -1,7 +1,7 @@
 source :rubygems
 
-gem 'whoaz'
-gem 'sinatra'
+gem 'whoaz', '~> 2.0'
+gem 'sinatra', '2.0.0.rc2'
 
 group :test do
   gem 'rspec'
