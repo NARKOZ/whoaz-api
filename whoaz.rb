@@ -2,7 +2,12 @@ require 'sinatra'
 require 'whoaz'
 require 'redis'
 
-REDIS = Redis.new(url: ENV['REDIS_URL'])
+REDIS ||= Redis.new(url: ENV['REDIS_URL'])
+
+def store_queried_domain
+  key = "whoaz_domain:#{params[:domain]}"
+  REDIS.exists(key) ? REDIS.incr(key) : REDIS.set(key, 1)
+end
 
 get '/' do
   redirect 'https://narkoz.github.io/whoaz'
@@ -10,9 +15,10 @@ end
 
 get '/v1/:domain' do
   content_type :json
+  store_queried_domain
 
-  key = "whoaz_domain:#{params[:domain]}"
-  REDIS.exists(key) ? REDIS.incr(key) : REDIS.set(key, 1)
+  cached = "whoaz_cached:#{params[:domain]}"
+  return REDIS.get(cached) if REDIS.exists(cached)
 
   begin
     domain = Whoaz.whois params[:domain]
@@ -35,7 +41,12 @@ get '/v1/:domain' do
   end
 
   data = { message: 'Domain not registered' } if domain && domain.free?
-  data.to_json
+  response = data.to_json
+
+  # cache response for 24 hours
+  REDIS.set(cached, response, ex: 86400)
+
+  response
 end
 
 not_found do
