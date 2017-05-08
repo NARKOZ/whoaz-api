@@ -2,8 +2,8 @@ source 'https://rubygems.org'
 
 ruby '2.4.1' if ENV['HEROKU']
 
-gem 'whoaz', '~> 2.0'
-gem 'sinatra', '2.0.0.rc2'
+gem 'sinatra'
+gem 'whoaz'
 gem 'redis'
 
 group :test do
