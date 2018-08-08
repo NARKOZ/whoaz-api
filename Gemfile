@@ -6,6 +6,8 @@ gem 'sinatra'
 gem 'whoaz'
 gem 'redis'
 
+gem 'puma', group: :production
+
 group :test do
   gem 'rspec'
   gem 'rack-test'
